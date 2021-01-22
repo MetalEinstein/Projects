@@ -58,14 +58,12 @@ def select_agent_pos(env, border_size):
     return possible_spawn_spot
 
 
-
-
 class WorldEnv(gym.Env):
     def __init__(self):
 
         # RESET PARAMETERS
         self.agent_step = 0
-        self.maxstep = 300
+        self.maxstep = 1000
 
         # MAP PARAMETERS
         self.GLOBAL_MAP_SIZE = 750
@@ -84,14 +82,7 @@ class WorldEnv(gym.Env):
 
         # --- OBSERVATION AND ACTION SPACE ---
         # Definition of observation space. We input pixel values between 0 - 255
-        self.low = np.array(
-            [0], dtype=np.int32
-        )
-        self.high = np.array(
-            [255], dtype=np.int32
-        )
-
-        self.observation_space = spaces.Box(self.low, self.high, dtype=np.int32)
+        self.observation_space = np.array(self.slam_map)
 
         # Definition of action space.
         self.action_space = spaces.Discrete(8)
@@ -133,12 +124,13 @@ class WorldEnv(gym.Env):
 
         # We add the agent to the global map
         cv2.circle(self.global_map, (self.agent_pos_x, self.agent_pos_y), self.agent_size, self.agent_color, -1)
+        cv2.circle(self.slam_map, (self.agent_pos_x, self.agent_pos_y), self.agent_size, self.agent_color, -1)
 
         return self.slam_map
 
     def step(self, action):
         # --- Step related variables ---
-        collision = False  # To check if we're done
+        collision = False
         done = False
         reward = 0
 
@@ -186,6 +178,7 @@ class WorldEnv(gym.Env):
                           pos_x - self.agent_range:pos_x + self.agent_range]
         diff = asarray(crop_img)
 
+        cv2.imshow("diff", crop_img)
         # We add the new position of the agent to the global and slam map
         cv2.circle(self.global_map, (self.agent_pos_x, self.agent_pos_y), self.agent_size, self.agent_color, -1)
         cv2.circle(self.slam_map, (self.agent_pos_x, self.agent_pos_y), self.agent_size, self.agent_color, -1)
@@ -207,12 +200,11 @@ class WorldEnv(gym.Env):
         cv2.imshow("Global Map", self.global_map)
         cv2.imshow("SLAM Map", self.slam_map)
 
-
     def close(self):
         cv2.destroyAllWindows()
         quit()
 
-
+"""
 world = WorldEnv()
 done = False
 for i in range(100):
@@ -221,11 +213,11 @@ for i in range(100):
     world.render()
     while not done:
         num = randint(0, 7)
-        _, done, reward = world.step(0)
+        _, done, reward = world.step(num)
         print(reward)
         world.render()
         cv2.waitKey(500)
-
+"""
 
 """
 # SLAM map
