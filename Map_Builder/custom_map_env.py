@@ -218,19 +218,3 @@ for i in range(100):
         world.render()
         cv2.waitKey(500)
 """
-
-"""
-# SLAM map
-slam_map = global_map.copy()
-slam_map.fill(150)
-cv2.imshow("SLAM Map", slam_map)
-cv2.waitKey()
-
-
-# New observation
-        self.observation = self.slam_map[pos_y - self.agent_range - 10:pos_y + self.agent_range + 10,
-                                         pos_x - self.agent_range - 10:pos_x + self.agent_range + 10]
-
-        row_size, col_size, _ = self.observation.shape
-        #cv2.circle(self.observation, (int(col_size / 2), int(row_size / 2)), self.agent_size, self.agent_color, -1)
-"""
